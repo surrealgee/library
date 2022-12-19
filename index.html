@@ -10,28 +10,38 @@
 </head>
 
 <body>
-    <table>
-        <thead>
-            <th>Author</th>
-            <th>Title</th>
-            <th>Pages</th>
-            <th>Read</th>
-        </thead>
-        <tbody id="bookList">
-            <!-- <tr>
-                <td>Hector Garcia</td>
-                <td>Ikigai</td>
-                <td>300</td>
-                <td>Yes</td>
-            </tr>
-            <tr>
-                <td>Herman Melville</td>
-                <td>Moby Dick</td>
-                <td>600</td>
-                <td>No</td>
-            </tr> -->
-        </tbody>
-    </table>
+    <header>
+        <h1>My Library</h1>
+    </header>
+
+    <main>
+        <table>
+            <thead>
+                <th>Author</th>
+                <th>Title</th>
+                <th>Pages</th>
+                <th>Read</th>
+            </thead>
+            <tbody id="bookList"></tbody>
+        </table>
+
+        <button id="new-book-btn" class="btn">New Book</button>        
+    </main>
+
+    <div class="form-modal" id="form-modal">
+        <button class="close-modal-btn" id="close-modal-btn">X</button>
+        <form action="#" id="form-el">
+            <label for="author">Author:</label>
+            <input type="text" name="author" id="author" placeholder="Author Name">
+            <label for="title">Title:</label>
+            <input type="text" name="title" id="title" placeholder="Book Title">
+            <label for="pages">Pages:</label>
+            <input type="number" name="pages" id="pages" placeholder="Number of pages">
+            <label for="isRead">Read:</label>
+            <input type="text" name="isRead" id="isRead" placeholder="Have you read it?">
+            <button type="submit" class="btn" id="add-book-btn">Add Book</button>
+        </form>
+    </div>
     <script src="main.js"></script>
 </body>
 
