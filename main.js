@@ -2,7 +2,7 @@
 
 // Variables
 
-const myLibrary = [];
+let myLibrary = [];
 const newBookBtn = document.getElementById("new-book-btn");
 const closeModalBtn = document.getElementById("close-modal-btn");
 const addBookBtn = document.getElementById("add-book-btn");
@@ -33,12 +33,28 @@ bookList.addEventListener("click", function (e) {
     } else if (e.target.dataset.read) {
         let targetBook = myLibrary[e.target.dataset.read];
         targetBook.isRead = !targetBook.isRead;
+        saveToStorage();
         renderBooks();
     }
 
 })
 
 // Functions
+
+function getFromStorage() {
+    if (localStorage.getItem("books") === null) {
+        myLibrary = [];
+    } else {
+        let booksFromStorage = JSON.parse(localStorage.getItem("books"));
+        myLibrary = booksFromStorage;
+    }
+
+    return myLibrary;
+}
+
+function saveToStorage() {
+    localStorage.setItem("books", JSON.stringify(myLibrary));
+}
 
 function getBook(book) {
     let author = book.get("author");
@@ -58,6 +74,7 @@ function renderBooks() {
 }
 
 function getBooks(library) {
+    library = getFromStorage();
     let bookList = ``;
     let i = 0;
 
@@ -81,11 +98,13 @@ function getBooks(library) {
 function removeBook(book) {
     let index = Number(book);
     myLibrary.splice(index, 1);
+    saveToStorage();
     renderBooks();
 }
 
-function addBookToLibrary(book) {
+function addBookToLibrary(book) {    
     myLibrary.push(book);
+    saveToStorage();
 }
 
 function showModal() {
@@ -105,13 +124,13 @@ function Book(author, title, pages, isRead) {
     this.isRead = Boolean(isRead);
 }
 
-const ikigai = new Book("Hector Garcia", "Ikigai", 295, true);
-const mobyDick = new Book("Herman Melville", "Moby Dick", 600, false);
+// const ikigai = new Book("Hector Garcia", "Ikigai", 295, true);
+// const mobyDick = new Book("Herman Melville", "Moby Dick", 600, false);
 
 // Calls
 
-addBookToLibrary(ikigai);
-addBookToLibrary(mobyDick);
-addBookToLibrary(new Book("Don Quixote", "Miguel De Cervantes", 800, false));
+// addBookToLibrary(ikigai);
+// addBookToLibrary(mobyDick);
+// addBookToLibrary(new Book("Don Quixote", "Miguel De Cervantes", 800, false));
 
 renderBooks();
