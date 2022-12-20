@@ -29,8 +29,11 @@ formEl.addEventListener("submit", function (e) {
 
 bookList.addEventListener("click", function (e) {
     if (e.target.dataset.delete) {
-        console.log(e.target.dataset.delete);
         removeBook(e.target.dataset.delete);
+    } else if (e.target.dataset.read) {
+        let targetBook = myLibrary[e.target.dataset.read];
+        targetBook.isRead = !targetBook.isRead;
+        renderBooks();
     }
 
 })
@@ -66,7 +69,7 @@ function getBooks(library) {
                 <td>${book.pages}</td>
                 <td>${(book.isRead) ? "Yes" : "No"}</td>
                 <td>
-                <button id="mark-read-btn">Read/Unread</button>
+                <button id="mark-read-btn" data-read="${i}">${(book.isRead) ? "Unread" : "Read"}</button>
                 <button id="delete-book-btn" data-delete="${i}">Delete</button></td>
             </tr>
         `;
@@ -98,8 +101,8 @@ function closeModal() {
 function Book(author, title, pages, isRead) {
     this.author = author;
     this.title = title;
-    this.pages = pages;
-    this.isRead = isRead;
+    this.pages = Number(pages);
+    this.isRead = Boolean(isRead);
 }
 
 const ikigai = new Book("Hector Garcia", "Ikigai", 295, true);
