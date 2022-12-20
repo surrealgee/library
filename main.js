@@ -7,6 +7,7 @@ const newBookBtn = document.getElementById("new-book-btn");
 const closeModalBtn = document.getElementById("close-modal-btn");
 const addBookBtn = document.getElementById("add-book-btn");
 const formEl = document.getElementById("form-el")
+const bookList = document.getElementById("book-list");
 
 // Event Listeners 
 
@@ -16,7 +17,7 @@ formEl.addEventListener("submit", function (e) {
     e.preventDefault();
 
     const newBookData = new FormData(formEl);
-    
+
     getBook(newBookData);
 
     const inputFields = document.getElementsByTagName("input");
@@ -25,6 +26,14 @@ formEl.addEventListener("submit", function (e) {
         field.value = "";
     }
 });
+
+bookList.addEventListener("click", function (e) {
+    if (e.target.dataset.delete) {
+        console.log(e.target.dataset.delete);
+        removeBook(e.target.dataset.delete);
+    }
+
+})
 
 // Functions
 
@@ -42,11 +51,12 @@ function getBook(book) {
 }
 
 function renderBooks() {
-    document.getElementById('bookList').innerHTML = getBooks(myLibrary);
+    document.getElementById('book-list').innerHTML = getBooks(myLibrary);
 }
 
 function getBooks(library) {
     let bookList = ``;
+    let i = 0;
 
     for (let book of library) {
         bookList += `
@@ -55,10 +65,20 @@ function getBooks(library) {
                 <td>${book.title}</td>
                 <td>${book.pages}</td>
                 <td>${(book.isRead) ? "Yes" : "No"}</td>
+                <td>
+                <button id="mark-read-btn">Read/Unread</button>
+                <button id="delete-book-btn" data-delete="${i}">Delete</button></td>
             </tr>
         `;
+        i++;
     }
     return bookList;
+}
+
+function removeBook(book) {
+    let index = Number(book);
+    myLibrary.splice(index, 1);
+    renderBooks();
 }
 
 function addBookToLibrary(book) {
