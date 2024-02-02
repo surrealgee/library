@@ -1,0 +1,38 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: lightblue;
+    display: flex;
+    align-items: start;
+    justify-content: center;
+    min-height: 100vh;
+    font-family: 'Roboto', sans-serif;
+}
+
+.books_table {
+    width: 80%;
+    margin-block-start: 1.5em;
+    border-collapse: collapse;
+    border: 1px solid black;
+    font-size: 0.875rem;
+}
+
+.books_table tr,
+.books_table td,
+.books_table thead,
+.books_table th {
+    border: 1px solid black;
+    padding: 0.5em;
+}
+
+.books_table tr td:nth-child(3) {
+    text-align: end;
+}
+
+.books_table tr td:nth-child(4) {
+    text-align: center;
+}
