@@ -1,5 +1,12 @@
 const myLibrary = [];
 
+const addBtn = document.querySelector('.add_button');
+const dialog = document.querySelector('.newBookDialog');
+
+addBtn.addEventListener('click', (e) => {
+   dialog.showModal();
+})
+
 
 
 function Book(title, author, pages, isRead) {

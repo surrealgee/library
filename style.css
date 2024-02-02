@@ -6,11 +6,18 @@
 
 body {
     background-color: lightblue;
-    display: flex;
-    align-items: start;
-    justify-content: center;
-    min-height: 100vh;
     font-family: 'Roboto', sans-serif;
+}
+
+.wrapper {
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: start;
+    gap: 1.5em;
+    position: relative;
 }
 
 .books_table {
@@ -35,4 +42,10 @@ body {
 
 .books_table tr td:nth-child(4) {
     text-align: center;
+}
+
+.newBookDialog {
+    width: 80%;
+    position: absolute;
+    margin: auto;
 }
