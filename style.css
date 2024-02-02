@@ -48,4 +48,36 @@ body {
     width: 80%;
     position: absolute;
     margin: auto;
+    padding: 1.5em;
+    border: none;
+    border-radius: 10px;
+}
+
+.newBookDialog::backdrop {
+    background-color: #333;
+    opacity: 0.7;
+}
+
+.newBookDialog form {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.5em;
+}
+
+.form_item {
+    /* width: 80%; */
+    display: grid;
+    grid-template-columns: 50px 1fr;
+    gap: 1em;
+    justify-items: start;
+}
+
+.form_item input {
+    outline: none;
+}
+
+.form_buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1em;
 }
