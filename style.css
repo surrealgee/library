@@ -81,3 +81,13 @@ body {
     justify-content: center;
     gap: 1em;
 }
+
+.controls {
+    text-align: center;
+}
+
+.controls button {
+    min-width: 75px;
+    display: inline-block;
+    margin: 0 auto;
+}
