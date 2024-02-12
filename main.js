@@ -7,13 +7,12 @@ const cancelBtn = document.querySelector('#cancel_btn');
 const bookForm = document.querySelector('#book_form');
 const booksTable = document.querySelector('.books_table');
 
-// console.log(booksTable);
-
 booksTable.addEventListener('click', (e) => {
     if (e.target.id === 'delete_btn') {
         deleteBook(e.target);
     } else if (e.target.id === 'read_btn') {
-        updateBookStatus(e.target);
+        const target = myLibrary[e.target.dataset.index];
+        target.changeStatus();
     }
 
     displayBooks();
@@ -54,14 +53,6 @@ cancelBtn.addEventListener('click', (e) => {
     dialog.close();
 })
 
-function updateBookStatus(targetEl) {
-    for (let i = 0; i < myLibrary.length; i++) {
-        if (i == targetEl.dataset.index) {
-            myLibrary[i].isRead = !myLibrary[i].isRead;
-        }
-    }
-}
-
 function clearFields() {
     const inputs = document.querySelectorAll('#book_form input');
 
@@ -74,12 +65,18 @@ function clearFields() {
     }
 }
 
-function Book(title, author, pages, isRead) {
-    this.title = title,
-        this.author = author,
-        this.pages = pages,
-        this.isRead = isRead
-};
+class Book {
+    constructor(title, author, pages, isRead) {
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.isRead = isRead;
+    }
+
+    changeStatus() {
+        this.isRead = !this.isRead;
+    }
+}
 
 function addBookToLibrary(book) {
     myLibrary.push(book);
