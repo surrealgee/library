@@ -2,22 +2,11 @@
 
 class Library {
     constructor() {
-        this.library = [];
+        this.books = [];
     }
 
-    addBook(book) {
-        this.tagBook(book, this.library.length);
-        this.library.push(book);
-    }
-
-    removeBook(book) {
-        const remainingBooks = this.library.filter(currentBook => currentBook.id !== book.id);
-        this.library = remainingBooks;
-        this.updateTags();
-    }
-
-    getLibrary() {
-        return this.library;
+    getBooks = () => {
+        return this.books;
     }
 
     tagBook(book, tag) {
@@ -25,9 +14,13 @@ class Library {
     }
 
     updateTags() {
-        for (let i = 0; i < this.library.length; i++) {
-            this.tagBook(this.library[i], i);
+        for (let i = 0; i < this.books.length; i++) {
+            this.tagBook(this.books[i], i);
         }
+    }
+
+    printBooks() {
+        console.table(this.getBooks());
     }
 }
 
@@ -40,168 +33,155 @@ class Book {
         this.id;
     }
 
-    setID(id) {
+    setID = (id) => {
         this.id = id;
     }
 
-    getID() {
+    getID = () => {
         return this.id;
     }
 
-    changeStatus() {
+    changeStatus = () => {
         this.isRead = !this.isRead;
     }
 }
 
-const myLibrary = new Library();
-console.log(myLibrary.getLibrary());
+// Controller
 
-const book1 = new Book('Atomic Habits', 'James Clear', 320, true);
-const book2 = new Book('Essentialism', 'Greg McKeown', 288, true);
-const book3 = new Book('Feel-Good Productivity', 'Ali Abdaal', 304, false);
+function Controller() {
+    const library = new Library();
 
-myLibrary.addBook(book1);
-myLibrary.addBook(book2);
-myLibrary.addBook(book3);
+    function addBook(book) {
+        library.tagBook(book, library.books.length);
+        library.books.push(book);
+        // library.printBooks();
+    }
 
-console.log(myLibrary.getLibrary());
+    function removeBook(bookID) {
+        bookID = Number(bookID);
+        const remainingBooks = library.books.filter(currentBook => {
+            const currentBookID = currentBook.getID();
+            return currentBookID !== bookID
+        });
+        library.books = remainingBooks;
+        library.updateTags();
+    }
 
+    return { getBooks: library.getBooks, addBook, removeBook };
+}
 
+// View
 
+function ScreenController() {
+    const controller = new Controller();
+    let bookList = controller.getBooks();
 
+    // Hard coded for development purposes, will remove when finished.
+    const book1 = new Book('Atomic Habits', 'James Clear', 320, true);
+    const book2 = new Book('Essentialism', 'Greg McKeown', 288, true);
+    const book3 = new Book('Feel-Good Productivity', 'Ali Abdaal', 304, false);
 
-// let myLibrary = [];
+    // Hard coded for development purposes, will remove when finished.
+    controller.addBook(book1);
+    controller.addBook(book2);
+    controller.addBook(book3);
 
-// const addBtn = document.querySelector('.add_button');
-// const dialog = document.querySelector('.newBookDialog');
-// const submitBtn = document.querySelector('#submit_btn');
-// const cancelBtn = document.querySelector('#cancel_btn');
-// const bookForm = document.querySelector('#book_form');
-// const booksTable = document.querySelector('.books_table');
+    const addBtn = document.querySelector('.add_button');
+    const dialog = document.querySelector('.newBookDialog');
+    const submitBtn = document.querySelector('#submit_btn');
+    const cancelBtn = document.querySelector('#cancel_btn');
+    const bookForm = document.querySelector('#book_form');
+    const booksTable = document.querySelector('.books_table');
 
-// booksTable.addEventListener('click', (e) => {
-//     if (e.target.id === 'delete_btn') {
-//         deleteBook(e.target);
-//     } else if (e.target.id === 'read_btn') {
-//         const target = myLibrary[e.target.dataset.index];
-//         target.changeStatus();
-//     }
+    function displayBooks() {
+        bookList = controller.getBooks();
 
-//     displayBooks();
-// })
+        let books = `
+    <thead>
+        <th>Title</th>
+        <th>Author</th>
+        <th>Pages</th>
+        <th>Read?</th>
+        <th>Controls</th>
+    </thead>
+    `;
 
-// addBtn.addEventListener('click', (e) => {
-//     dialog.showModal();
-// })
+        for (let book of bookList) {
+            books += `
+        <tr>
+            <td>${book.title}</td>
+            <td>${book.author}</td>
+            <td>${book.pages}</td>
+            <td>${book.isRead ? 'Yes' : 'No'}</td>
+            <td class="controls">
+            <button id="read_btn" data-index=${book.getID()}>${book.isRead ? "Unread" : "Read"}</button>
+            <button id="delete_btn" data-index=${book.getID()}>X</button>
+            </td>
+        </tr>
+        `
+        }
 
-// submitBtn.addEventListener('click', e => {
-//     e.preventDefault();
+        booksTable.innerHTML = books;
+    }
 
-//     const inputs = document.querySelectorAll('#book_form input');
-//     const bookData = {};
+    booksTable.addEventListener('click', (e) => {
+        if (e.target.id === 'delete_btn') {
+            controller.removeBook(e.target.dataset.index);
+        } else if (e.target.id === 'read_btn') {
+            const target = bookList[e.target.dataset.index];
+            target.changeStatus();
+        }
+        displayBooks();
+    })
 
-//     for (let input of inputs) {
-//         if (input.type === 'checkbox') {
-//             bookData[input.name] = input.checked;
-//         } else {
-//             bookData[input.name] = input.value;
-//         }
-//     }
+    addBtn.addEventListener('click', (e) => {
+        dialog.showModal();
+    })
 
-//     const { title, author, pages, isRead } = bookData;
+    submitBtn.addEventListener('click', e => {
+        e.preventDefault();
 
-//     if (title && author) {
-//         const newBook = new Book(title, author, pages, isRead);
+        const inputs = document.querySelectorAll('#book_form input');
+        const bookData = {};
 
-//         addBookToLibrary(newBook);
-//         displayBooks();
-//         dialog.close();
-//         clearFields();
-//     }
-// })
+        for (let input of inputs) {
+            if (input.type === 'checkbox') {
+                bookData[input.name] = input.checked;
+            } else {
+                bookData[input.name] = input.value;
+            }
+        }
 
-// cancelBtn.addEventListener('click', (e) => {
-//     e.preventDefault();
-//     dialog.close();
-// })
+        const { title, author, pages, isRead } = bookData;
 
-// function clearFields() {
-//     const inputs = document.querySelectorAll('#book_form input');
+        if (title && author) {
+            const newBook = new Book(title, author, pages, isRead);
 
-//     for (let input of inputs) {
-//         if (input.type === 'checkbox') {
-//             input.checked = false;
-//         } else {
-//             input.value = '';
-//         }
-//     }
-// }
+            controller.addBook(newBook);
+            displayBooks();
+            dialog.close();
+            clearFields();
+        }
+    })
 
-// class Book {
-//     constructor(title, author, pages, isRead) {
-//         this.title = title;
-//         this.author = author;
-//         this.pages = pages;
-//         this.isRead = isRead;
-//     }
+    cancelBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        dialog.close();
+    })
 
-//     changeStatus() {
-//         this.isRead = !this.isRead;
-//     }
-// }
+    function clearFields() {
+        const inputs = document.querySelectorAll('#book_form input');
 
-// function addBookToLibrary(book) {
-//     myLibrary.push(book);
-// }
+        for (let input of inputs) {
+            if (input.type === 'checkbox') {
+                input.checked = false;
+            } else {
+                input.value = '';
+            }
+        }
+    }
 
-// function displayBooks() {
-//     const booksTable = document.querySelector('.books_table');
-//     let books = `
-//     <thead>
-//         <th>Title</th>
-//         <th>Author</th>
-//         <th>Pages</th>
-//         <th>Read?</th>
-//         <th>Controls</th>
-//     </thead>
-//     `;
+    displayBooks();
+}
 
-//     for (let i = 0; i < myLibrary.length; i++) {
-//         books += `
-//         <tr>
-//             <td>${myLibrary[i].title}</td>
-//             <td>${myLibrary[i].author}</td>
-//             <td>${myLibrary[i].pages}</td>
-//             <td>${myLibrary[i].isRead ? 'Yes' : 'No'}</td>
-//             <td class="controls">
-//             <button id="read_btn" data-index=${i}>${myLibrary[i].isRead ? "Unread" : "Read"}</button>
-//             <button id="delete_btn" data-index=${i}>X</button>
-//             </td>
-//         </tr>
-//         `
-//     }
-
-//     booksTable.innerHTML = books;
-// }
-
-// function deleteBook(targetEl) {
-//     const newArr = [];
-
-//     for (let i = 0; i < myLibrary.length; i++) {
-//         if (i != targetEl.dataset.index) {
-//             newArr.push(myLibrary[i]);
-//         }
-//     }
-
-//     myLibrary = newArr;
-// }
-
-// const book1 = new Book('Atomic Habits', 'James Clear', 320, true);
-// const book2 = new Book('Essentialism', 'Greg McKeown', 288, true);
-// const book3 = new Book('Feel-Good Productivity', 'Ali Abdaal', 304, false);
-
-// addBookToLibrary(book1);
-// addBookToLibrary(book2);
-// addBookToLibrary(book3);
-
-// displayBooks();
+ScreenController();
